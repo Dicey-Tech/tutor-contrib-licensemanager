@@ -1,0 +1,7 @@
+licensemanager-job:
+  image: {{ LICENSEMANAGER_DOCKER_IMAGE }}
+  environment:
+    DJANGO_SETTINGS_MODULE: license_manager.settings.tutor.production
+  volumes:
+    - ../plugins/licensemanager/apps/settings/tutor:/openedx/license-manager/license_manager/settings/tutor:ro
+  depends_on: {{ [("lms", RUN_LMS), ("mysql", RUN_MYSQL)]|list_if }}

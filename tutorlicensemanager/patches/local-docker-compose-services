@@ -1,0 +1,8 @@
+licensemanager:
+  image: {{ LICENSEMANAGER_DOCKER_IMAGE }}
+  environment:
+    DJANGO_SETTINGS_MODULE: license_manager.settings.tutor.production
+  volumes:
+    - ../plugins/licensemanager/apps/settings/tutor:/openedx/license-manager/license_manager/settings/tutor:ro
+  restart: unless-stopped
+  depends_on: {{ [("mysql", RUN_MYSQL)]|list_if }}

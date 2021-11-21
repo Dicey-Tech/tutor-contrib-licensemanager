@@ -1,0 +1,49 @@
+./manage.py lms shell -c \
+    "from django.contrib.auth import get_user_model;\
+    get_user_model().objects.filter(username='licensemanager').exclude(email='licensemanager@openedx').update(email='licensemanager@openedx')"
+
+./manage.py lms manage_user licensemanager licensemanager@openedx --staff --superuser --unusable-password
+
+# Development client
+./manage.py lms create_dot_application \
+    --grant-type client-credentials \
+    --redirect-uris "{% if ENABLE_HTTPS %}https{% else %}http{% endif %}://{{ LICENSEMANAGER_HOST }}:8160/complete/edx-oauth2/" \
+    --client-id {{ LICENSEMANAGER_OAUTH2_KEY_DEV }} \
+    --client-secret {{ LICENSEMANAGER_OAUTH2_SECRET }} \
+    --scopes user_id \
+    --skip-authorization \
+    --update \
+    licensemanager-dev \
+    licensemanager
+./manage.py lms create_dot_application \
+    --grant-type authorization-code \
+    --redirect-uris "http://{{ LICENSEMANAGER_HOST }}:8170/complete/edx-oauth2/" \
+    --client-id {{ LICENSEMANAGER_OAUTH2_KEY_SSO_DEV }} \
+    --client-secret {{ LICENSEMANAGER_OAUTH2_SECRET_SSO }} \
+    --scopes user_id \
+    --skip-authorization \
+    --update \
+    licensemanager-sso-dev \
+    licensemanager
+
+# Production client
+./manage.py lms create_dot_application \
+    --grant-type client-credentials \
+    --redirect-uris "{% if ENABLE_HTTPS %}https{% else %}http{% endif %}://{{ LICENSEMANAGER_HOST }}/complete/edx-oauth2/" \
+    --client-id {{ LICENSEMANAGER_OAUTH2_KEY }} \
+    --client-secret {{ LICENSEMANAGER_OAUTH2_SECRET }} \
+    --scopes user_id \
+    --skip-authorization \
+    --update \
+    licensemanager \
+    licensemanager
+./manage.py lms create_dot_application \
+    --grant-type authorization-code \
+    --redirect-uris "{% if ENABLE_HTTPS %}https{% else %}http{% endif %}://{{ LICENSEMANAGER_HOST }}/complete/edx-oauth2/" \
+    --client-id {{ LICENSEMANAGER_OAUTH2_KEY_SSO }} \
+    --client-secret {{ LICENSEMANAGER_OAUTH2_SECRET_SSO }} \
+    --scopes user_id \
+    --skip-authorization \
+    --update \
+    licensemanager-sso \
+    licensemanager
