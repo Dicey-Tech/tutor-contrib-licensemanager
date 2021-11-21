@@ -8,9 +8,16 @@ templates = pkg_resources.resource_filename(
     "tutorlicensemanager", "templates"
 )
 
-config = {}
+config = {
+    "defaults": {
+        "VERSION": __version__,
+        "DOCKER_IMAGE": "{{ DOCKER_REGISTRY }}diceytech/enterprise-catalog:{{ LICENSEMANAGER_VERSION }}",
+    }
+}
 
-hooks = {}
+hooks = {
+    "build-image": {"licensemanager": "{{ LICENSEMANAGER_DOCKER_IMAGE }}"},
+}
 
 
 def patches():
